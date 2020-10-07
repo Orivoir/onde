@@ -1,7 +1,6 @@
 import {
   RequestAborted,
-  ServerRequest,
-  resolve
+  ServerRequest
 } from './../../mod.ts'
 
 export default class AbortedError {

@@ -21,9 +21,18 @@ export default interface IncomingResponse {
   setContent: ( content: string ) => void,
 
   /**
-   * @description emit response file
+   * @description emit response file with `views` config as root
    */
   render: ( path: string ) => Promise<void>,
 
+  /**
+   * @description emit response file from absolute path
+   */
   sendFile: ( absolutePath: string ) => Promise<void>
+
+  /**
+     * @description shortcut JSON response
+   */
+  json: ( content: JSON ): void
+
 }

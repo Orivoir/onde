@@ -9,12 +9,12 @@ import {
 
 export default class Response implements IncomingResponse {
 
-  private _status: number = 200
+  private _status = 200
 
   private _request: IncomingRequest
 
-  private static _isAborted: boolean = false
-  private static _isFinish: boolean = false
+  private static _isAborted = false
+  private static _isFinish = false
 
   private static _aborted?: RequestAborted
 
@@ -227,6 +227,33 @@ export default class Response implements IncomingResponse {
 
     } )
 
+  }
+
+  public json( content: JSON ): void {
+
+    this.headers.set('Content-Type', 'application/json')
+
+    this._request.respond({
+      status: this._status,
+      body: JSON.stringify( content ),
+      headers: this.headers
+    })
+    .then( () => {
+      this.finalize([])
+    } )
+    .catch( (error: any) => {
+
+      Response._isAborted = true
+      Response._aborted = {
+        reason: "native ServerRequest.respond have fail"
+      }
+
+      if( typeof error !== "undefined" ) {
+
+        Response._aborted.error = error
+      }
+
+    } )
   }
 
   /**

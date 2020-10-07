@@ -27,7 +27,7 @@ class Onde implements OndeConfig, OndeRouter, OndeDone {
 
   }
 
-  private _views: string = "./views"
+  private _views = "./views"
   private _static: string | null = null
   private _routes: Array<HttpRoute> = []
   private _staticRewrite: string | null = null
@@ -214,7 +214,7 @@ class Onde implements OndeConfig, OndeRouter, OndeDone {
     this.addRoute({
       path: location,
       callback: onRequest,
-      methods: [ "PUT" ]
+      methods: [ "DELETE" ]
     })
 
     return this

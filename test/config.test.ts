@@ -1,4 +1,4 @@
-import Onde, {resolve, assertEquals} from './mod.ts'
+import Onde, {resolve, assertEquals} from './../mod.ts'
 
 Deno.test("default config", () => {
 
