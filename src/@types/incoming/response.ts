@@ -33,6 +33,6 @@ export default interface IncomingResponse {
   /**
      * @description shortcut JSON response
    */
-  json: ( content: JSON ): void
+  json: ( content: JSON ) => void
 
 }
