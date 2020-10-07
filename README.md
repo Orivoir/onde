@@ -19,18 +19,20 @@ const Onde from "https://deno.land/x/Onde@v0.1.0/mod.ts"
 
 const {serve} from "https://deno.land/std@0.73.0/http/server.ts"
 
+const onde = new Onde
+
 // relative path to views folder
-Onde.views = "./views"
+onde.views = "./views"
 
 // relative path to static folder
-Onde.static = "./public"
+onde.static = "./public"
 
 // rewriting url for access to static folder
-Onde.staticRewrite = "/assets"
+onde.staticRewrite = "/assets"
 
 const server = serve( "127.0.0.1:3000" )
 
-Onde.listen( server )
+onde.listen( server )
 
 ```
 
