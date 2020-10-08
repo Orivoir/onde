@@ -2,19 +2,23 @@ import {
   isAbsolute,
   resolve,
   normalize,
+
   OndeConfig,
   OndeRouter,
-  OnRequest,
   OndeDone,
+
+  OnRequest,
   HttpRoute,
-  Route,
   HttpLocation,
-  Server,
-  ServerRequest,
+  Route,
   HttpUri,
-  Request,
   Response,
-  AbortedError, RequestAborted
+  Request,
+  AbortedError,
+  RequestAborted,
+
+  ServerRequest,
+  Server
 } from './../mod.ts'
 
 class Onde implements OndeConfig, OndeRouter, OndeDone {
@@ -28,31 +32,7 @@ class Onde implements OndeConfig, OndeRouter, OndeDone {
   }
 
   private _views = "./views"
-  private _static: string | null = null
   private _routes: Array<HttpRoute> = []
-  private _staticRewrite: string | null = null
-
-  private get staticAccess(): string | null {
-
-    if( typeof this.staticRewrite === "string" ) {
-
-      return this.staticRewrite
-    }
-
-    return this.static
-  }
-
-  /**
-   * @see OndeConfig
-   */
-  get staticRewrite(): string | null {
-
-    return this._staticRewrite
-  }
-  set staticRewrite( staticRewrite: string | null ) {
-
-    this._staticRewrite = staticRewrite
-  }
 
   /**
    * @see OndeConfig
@@ -63,22 +43,6 @@ class Onde implements OndeConfig, OndeRouter, OndeDone {
   set views(path: string) {
 
     this._views = this.set( "views", path )
-  }
-
-  /**
-   * @see OndeConfig
-   */
-  get static(): string | null {
-
-    return this._static
-  }
-  set static(path: string | null) {
-
-    if( typeof path === "string" ) {
-      this._static = this.set( "static", path )
-    } else {
-      this._static = null
-    }
   }
 
   public listen(server: Server): void {
@@ -114,15 +78,10 @@ class Onde implements OndeConfig, OndeRouter, OndeDone {
 
           if( Response.canContinue ) {
 
-            const incomingRequest = new Request( {
-              route,
-              static: this.staticAccess
-            } )
+            const incomingRequest = new Request( { route } )
 
             const incomingResponse = new Response( {
               views: this.views,
-              phisycalStatic: this._static,
-              rewriteStatic: this._staticRewrite,
               request: incomingRequest
             } )
 
@@ -240,7 +199,6 @@ class Onde implements OndeConfig, OndeRouter, OndeDone {
     return this
   }
 
-
   /**
    * @description generic setters of static and view paths
    * @param key "views" | "static"
@@ -267,33 +225,36 @@ class Onde implements OndeConfig, OndeRouter, OndeDone {
 
   private findRoutes( request: ServerRequest ): Array<HttpRoute> {
 
+    const pathname: string = this.getPathname( request )
+
     return this._routes.filter( (route: HttpRoute): boolean => {
 
       if( route.path instanceof RegExp ) {
 
-        return route.path.test( request.url )
+        return route.path.test( pathname )
 
       } else {
 
         if( !route.params.length ) {
 
-          return route.path === request.url
+          return route.path === pathname
+
         } else {
 
           let isMatch = true
 
-          const uris: string[] = request.url.split('/')
+          const uris: string[] = pathname.split('/')
 
           // while all static uri.s parts are equal.s
           route.uris.forEach( (uri: HttpUri, index: number) => {
 
             if( !uri.isParam && uri.name !== uris[index] ) {
 
-              // position an static uri is not equals to same position uri request
+              // position of an static uri is not equals to same position uri request
               isMatch = false
             }
 
-            // not static uri part is considerate as any uri name
+            // variable uri considerate as any uri name
 
           } )
 
@@ -302,6 +263,14 @@ class Onde implements OndeConfig, OndeRouter, OndeDone {
       }
 
     }  )
+
+  }
+
+  private getPathname(request: ServerRequest): string {
+
+    const pathname = request.url.split('?')[0]
+
+    return pathname
 
   }
 

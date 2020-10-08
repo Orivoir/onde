@@ -23,9 +23,6 @@ export default class Response implements IncomingResponse {
    */
   private _views: string
 
-  private _phisycalStatic: string | null = null
-  private _rewriteStatic: string | null = null
-
   public headers: Headers
 
   public static get aborted(): RequestAborted | null {
@@ -80,41 +77,16 @@ export default class Response implements IncomingResponse {
 
   constructor(worker: {
     views: string,
-    phisycalStatic: string | null,
-    rewriteStatic: string | null
     request: IncomingRequest
   }) {
 
     this._views = worker.views
     this._request = worker.request
-    this._phisycalStatic = worker.phisycalStatic
-    this._rewriteStatic = worker.rewriteStatic
 
     this.headers = new Headers
 
-    if( this._request.isStaticFile ) {
-
-      const url: string = this._request.url
-
-      let absolutePath: string = url
-
-      if( typeof this._rewriteStatic === "string" ) {
-
-        absolutePath = url.replace(
-          this._rewriteStatic,
-          (this._phisycalStatic as string)
-        )
-
-      }
-
-      this.sendFile( absolutePath )
-
-    } else {
-
-      this.headers.append('Content-Type', 'text/html')
-      this.headers.append('X-Powered-By', 'Onde')
-
-    }
+    this.headers.append('Content-Type', 'text/html')
+    this.headers.append('X-Powered-By', 'Onde')
   }
 
   /**

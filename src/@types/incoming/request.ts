@@ -5,9 +5,19 @@ import {ServerRequest} from './../../../depts.ts'
  */
 export default interface IncomingRequest extends ServerRequest {
 
+  /**
+   * @description parse params url
+   */
   params: {
     [keyname: string]: string
   }
 
-  isStaticFile: boolean
+  /**
+   * @description parse querystring from url
+   */
+  query: {
+    [keyname: string]: string
+  }
+
+  pathname: string
 }

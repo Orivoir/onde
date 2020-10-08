@@ -15,9 +15,9 @@
 
 ```ts
 
-const Onde from "https://deno.land/x/Onde@v0.1.0/mod.ts"
+import Onde from "https://deno.land/x/Onde@v0.1.0/mod.ts"
 
-const {serve} from "https://deno.land/std@0.73.0/http/server.ts"
+import {serve} from "https://deno.land/std@0.73.0/http/server.ts"
 
 const onde = new Onde
 
@@ -57,18 +57,12 @@ onde.get('/', ( request, response ) => {
 
 } )
 
-onde.delete('/foobar/:id?token=:token', ( request, response ) => {
+onde.delete('/foobar/:id', ( request, response ) => {
 
   const {id: string} = request.params
 
-  const {token: string} = request.query
-
   response.json({
-
-    idReceveid: id,
-
-    tokenReceveid: token
-
+    idReceveid: id
   })
 
 } )
@@ -85,6 +79,6 @@ See [Setup](#setup) for upgrade views folder
 ## Exceptions
 
 **Onde** can aborted an request and emit static reply response as `500 Internal Error`
-while path file is invalid, permission --allow-read missing or native [ServerRequest.respond](https://doc.deno.land/https/deno.land/std/http/mod.ts#ServerRequest) have fail
+while path file is invalid, permission `--allow-read` missing or native [ServerRequest.respond](https://doc.deno.land/https/deno.land/std/http/mod.ts#ServerRequest) have crash
 
 see class at `/src/throws/Aborted.ts` this class is a easy definition and just emit response `text/html` with static reply document generate from static method `Aborted.getTemplate`
